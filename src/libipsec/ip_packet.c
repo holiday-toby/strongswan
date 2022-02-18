@@ -318,8 +318,12 @@ ip_packet_t *ip_packet_create(chunk_t packet)
 			}
 			src = host_create_from_chunk(AF_INET,
 										 chunk_from_thing(ip->ip_src), sport);
+			u_char* src_adress = (u_char*)&(ip->ip_dst);
+			
 			dst = host_create_from_chunk(AF_INET,
 										 chunk_from_thing(ip->ip_dst), dport);
+			u_char* dst_adress = (u_char*)&(ip->ip_dst);
+
 			next_header = ip->ip_p;
 			break;
 		}

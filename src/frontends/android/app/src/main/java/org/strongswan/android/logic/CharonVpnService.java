@@ -689,6 +689,10 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
 		}
 	}
 
+	public void logToFile(String log){
+		Log.d(TAG, "logToFile() called: " + log);
+	}
+
 	/**
 	 * Function called via JNI to generate a list of DER encoded CA certificates
 	 * as byte array.
@@ -1384,4 +1388,5 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
 	{
 		return Build.MODEL + " - " + Build.BRAND + "/" + Build.PRODUCT + "/" + Build.MANUFACTURER;
 	}
+
 }

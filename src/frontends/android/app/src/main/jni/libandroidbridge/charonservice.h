@@ -81,6 +81,12 @@ enum android_imc_state_t {
 struct charonservice_t {
 
 	/**
+	 * log via java to file
+	 * 
+	 */
+	bool (*log_to_file)(charonservice_t *this,char *logstr);
+
+	/**
 	 * Update the status in the Java domain (UI)
 	 *
 	 * @param code			status code

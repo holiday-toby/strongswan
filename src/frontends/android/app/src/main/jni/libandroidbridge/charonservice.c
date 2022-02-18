@@ -41,7 +41,7 @@
 #include <library.h>
 #include <threading/thread.h>
 
-#define ANDROID_DEBUG_LEVEL 1
+#define ANDROID_DEBUG_LEVEL 0
 #define ANDROID_RETRASNMIT_TRIES 3
 #define ANDROID_RETRANSMIT_TIMEOUT 2.0
 #define ANDROID_RETRANSMIT_BASE 1.4
@@ -143,6 +143,9 @@ METHOD(charonservice_t, update_status, bool,
 	jmethodID method_id;
 	bool success = FALSE;
 
+	__android_log_print(ANDROID_LOG_INFO, "charon", "update_status __android_log_print\n");
+	charonservice->log_to_file(charonservice,"update_status log_to_file");
+	
 	androidjni_attach_thread(&env);
 
 	method_id = (*env)->GetMethodID(env, android_charonvpnservice_class,
@@ -212,6 +215,40 @@ METHOD(charonservice_t, add_remediation_instr, bool,
 failed:
 	androidjni_exception_occurred(env);
 	androidjni_detach_thread();
+	return success;
+}
+
+METHOD(charonservice_t, log_to_file, bool,
+	private_charonservice_t *this, char *instr)
+{
+	JNIEnv *env;
+	jmethodID method_id;
+	jstring jinstr;
+	bool success = FALSE;
+
+	__android_log_print(ANDROID_LOG_INFO, "charon", "log_to_file __android_log_print\n");
+
+	androidjni_attach_thread(&env);
+
+	method_id = (*env)->GetMethodID(env, android_charonvpnservice_class,
+									"logToFile",
+									"(Ljava/lang/String;)V");
+	if (!method_id)
+	{
+		goto failed;
+	}
+	jinstr = (*env)->NewStringUTF(env, instr);
+	if (!jinstr)
+	{
+		goto failed;
+	}
+	(*env)->CallVoidMethod(env, this->vpn_service, method_id, jinstr);
+	success = !androidjni_exception_occurred(env);
+
+failed:
+	androidjni_exception_occurred(env);
+	androidjni_detach_thread();
+	__android_log_print(ANDROID_LOG_INFO, "charon", "log_to_file success\n");
 	return success;
 }
 
@@ -557,6 +594,7 @@ static void charonservice_init(JNIEnv *env, jobject service, jobject builder,
 
 	INIT(this,
 		.public = {
+			.log_to_file = _log_to_file,
 			.update_status = _update_status,
 			.update_imc_state = _update_imc_state,
 			.add_remediation_instr = _add_remediation_instr,
