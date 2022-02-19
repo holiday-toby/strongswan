@@ -516,10 +516,10 @@ static bool charonservice_register(plugin_t *plugin, plugin_feature_t *feature,
 /**
  * Set strongswan.conf options
  */
-static void set_options(char *logfile, jboolean ipv6)
+static void set_options(char *logfile, jboolean ipv6, jint log_level)
 {
 	lib->settings->set_int(lib->settings,
-					"charon.plugins.android_log.loglevel", ANDROID_DEBUG_LEVEL);
+					"charon.plugins.android_log.loglevel", log_level);
 	/* setup file logger */
 	lib->settings->set_str(lib->settings,
 					"charon.filelog.android.path", logfile);
@@ -530,7 +530,7 @@ static void set_options(char *logfile, jboolean ipv6)
 	lib->settings->set_bool(lib->settings,
 					"charon.filelog.android.flush_line", TRUE);
 	lib->settings->set_int(lib->settings,
-					"charon.filelog.android.default", ANDROID_DEBUG_LEVEL);
+					"charon.filelog.android.default", log_level);
 
 	lib->settings->set_int(lib->settings,
 					"charon.retransmit_tries", ANDROID_RETRASNMIT_TRIES);
@@ -672,7 +672,7 @@ static void __attribute__ ((constructor))register_logger()
  * Initialize charon and the libraries via JNI
  */
 JNI_METHOD(CharonVpnService, initializeCharon, jboolean,
-	jobject builder, jstring jlogfile, jstring jappdir, jboolean byod, jboolean ipv6)
+	jobject builder, jstring jlogfile, jstring jappdir, jboolean byod, jboolean ipv6, jint log_level)
 {
 	struct sigaction action;
 	struct utsname utsname;
@@ -694,7 +694,7 @@ JNI_METHOD(CharonVpnService, initializeCharon, jboolean,
 	/* set options before initializing other libraries that might read them */
 	logfile = androidjni_convert_jstring(env, jlogfile);
 
-	set_options(logfile, ipv6);
+	set_options(logfile, ipv6, log_level);
 	free(logfile);
 
 	if (!libipsec_init())

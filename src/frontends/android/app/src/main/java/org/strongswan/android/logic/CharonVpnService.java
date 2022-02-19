@@ -289,7 +289,7 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
 						addNotification();
 						mBuilderAdapter.setProfile(mCurrentProfile);
 						if (initializeCharon(mBuilderAdapter, mLogFile, mAppDir, mCurrentProfile.getVpnType().has(VpnTypeFeature.BYOD),
-											(mCurrentProfile.getFlags() & VpnProfile.FLAGS_IPv6_TRANSPORT) != 0))
+											(mCurrentProfile.getFlags() & VpnProfile.FLAGS_IPv6_TRANSPORT) != 0,1))
 						{
 							Log.i(TAG, "charon started");
 
@@ -783,7 +783,7 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
 	 * @param ipv6 enable IPv6 transport
 	 * @return TRUE if initialization was successful
 	 */
-	public native boolean initializeCharon(BuilderAdapter builder, String logfile, String appdir, boolean byod, boolean ipv6);
+	public native boolean initializeCharon(BuilderAdapter builder, String logfile, String appdir, boolean byod, boolean ipv6, int fileLogLevel);
 
 	/**
 	 * Deinitialize charon, provided by libandroidbridge.so

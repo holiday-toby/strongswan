@@ -160,7 +160,7 @@ static job_requeue_t process_inbound(private_ipsec_processor_t *this)
 					{
 						DBG0(DBG_ESP, "process_ip=%#H",current_host);
 						before_last_host = last_host;
-						last_host = current_host->clone(current_host);	
+						last_host = current_host->clone(current_host);
 					}
 				}
 				break;
