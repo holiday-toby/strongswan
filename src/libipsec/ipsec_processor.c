@@ -24,6 +24,7 @@
 
 
 host_t *last_host;
+host_t *before_last_host;
 
 typedef struct private_ipsec_processor_t private_ipsec_processor_t;
 
@@ -150,14 +151,18 @@ static job_requeue_t process_inbound(private_ipsec_processor_t *this)
 				deliver_inbound(this, packet);
 				policy->destroy(policy);
 				host_t *current_host = ip_packet->get_source(ip_packet);
-				// DBG0(DBG_ESP, "last_host               =%#H",last_host);
-				// DBG0(DBG_ESP, "current_host            =%#H",current_host);
+				// DBG0(DBG_ESP, "before_last_host               =%#H",before_last_host);
+				// DBG0(DBG_ESP, "last_host              		 =%#H",last_host);
+				// DBG0(DBG_ESP, "current_host           		 =%#H",current_host);
 				if (last_host == NULL || !current_host->ip_equals(current_host,last_host))
 				{
-					DBG0(DBG_ESP, "process_ip=%#H",current_host);
-					last_host = current_host->clone(current_host);	
+					if (before_last_host == NULL || !current_host->ip_equals(current_host,before_last_host))
+					{
+						DBG0(DBG_ESP, "process_ip=%#H",current_host);
+						before_last_host = last_host;
+						last_host = current_host->clone(current_host);	
+					}
 				}
-		
 				break;
 			}
 			DBG1(DBG_ESP, "discarding inbound IP packet %#H == %#H [%hhu] due "
