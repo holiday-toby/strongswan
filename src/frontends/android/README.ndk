@@ -3,7 +3,7 @@ To build this within the NDK the following things have to be done:
  - By default the strongSwan sources of the current Git tree are used. They have
    to be prepared first (see HACKING for a list of required tools):
 
-     ./autogen.sh && ./configure && make && make distclean
+     ./autogen.sh && ./configure && make dist
 
    It is also possible to use the sources from a different directory (e.g. an
    extracted tarball) by setting strongswan_DIR in app/src/main/jni/Android.mk.
@@ -12,3 +12,5 @@ To build this within the NDK the following things have to be done:
    Since the sources need to be changed to be built on Android (and especially
    in the NDK) we provide a modified mirror of the official Android repositories
    on git.strongswan.org.
+
+ - 以上若报错，根据以下教程进行编译:https://github.com/holiday-toby/strongswan-android
